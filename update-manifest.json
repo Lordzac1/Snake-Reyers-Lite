@@ -1,14 +1,14 @@
 {
   "version": "0.2.0",
-  "published_at": "DATA_REAL_DA_PUBLICACAO",
+  "published_at": "10/11/2026",
   "minimum_launcher_version": "0.1.0",
   "packages": {
     "windows-x86_64": {
-      "url": "https://github.com/Lordzac1/Snake-Reyers-Lite/releases/download/v0.2.0/NOME_EXATO_DO_ARQUIVO.zip",
+      "url": "https://github.com/Lordzac1/Snake-Reyers-Lite/releases/download/v0.2.0/Snake-Reyers-Lite-main (1).zip",
       "sha256": "HASH_SHA256_REAL"
     },
     "linux-x86_64": {
-      "url": "https://github.com/Lordzac1/Snake-Reyers-Lite/releases/download/v0.2.0/NOME_EXATO_DO_ARQUIVO.tar.gz",
+      "url": "https://github.com/Lordzac1/Snake-Reyers-Lite/releases/download/v0.2.0/Snake-Reyers-Lite-main (1).tar.gz",
       "sha256": "HASH_SHA256_REAL"
     }
   }
