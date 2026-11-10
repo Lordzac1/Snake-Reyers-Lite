@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Snake Reyers Lite</title>
+  <link rel="stylesheet" href="/static/css/panel.css?v=7">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <strong>SNAKE REYERS LITE</strong>
+        <span>Controle da live interativa em Godot</span>
+      </div>
+
+      <nav>
+        <button id="liveToggleTop" class="live-toggle" type="button">
+          Abrir jogo
+        </button>
+        <button id="refresh" type="button">Atualizar</button>
+        <button id="systemUpdateTop" type="button">Atualizar sistema</button>
+        <button id="openTextureModal" type="button">Enviar textura</button>
+        <button id="buildGodotTop" type="button">Compilar release</button>
+        <button id="testEvent" type="button">Evento teste</button>
+      </nav>
+    </header>
+
+    <section class="card" style="margin-top:8px">
+      <h2>Controle do jogo e da live</h2>
+      <p>
+        O servidor abre o jogo e conecta o monitor TikTok. A captura e a
+        transmissao ficam por conta do TikTok LIVE Studio.
+      </p>
+
+      <div class="control-strip">
+        <label for="sessionUsername">Usuário TikTok</label>
+        <input
+          id="sessionUsername"
+          maxlength="96"
+          autocomplete="off"
+          placeholder="@usuario_da_live"
+        >
+
+        <label for="sessionMonitorServer">Servidor do monitor</label>
+        <input
+          id="sessionMonitorServer"
+          autocomplete="off"
+          placeholder="http://127.0.0.1:2619"
+        >
+
+        <label for="sessionGameRuntime">Execução do jogo</label>
+        <select id="sessionGameRuntime">
+          <option value="build" selected>Build release</option>
+          <option value="editor">Godot editor/projeto</option>
+        </select>
+
+        <label for="sessionGodotExecutable">Executável</label>
+        <input
+          id="sessionGodotExecutable"
+          autocomplete="off"
+          placeholder="Deixe vazio para usar o build padrao"
+        >
+
+        <label for="sessionDisplay">Display (Linux)</label>
+        <input
+          id="sessionDisplay"
+          autocomplete="off"
+          placeholder="Ex: :0"
+        >
+      </div>
+
+      <div class="row">
+        <button id="sessionSave" type="button">
+          Salvar configuração
+        </button>
+
+        <button id="sessionStart" class="live-toggle" type="button">
+          Abrir jogo
+        </button>
+
+        <button id="sessionStop" type="button">
+          Fechar jogo
+        </button>
+      </div>
+
+      <pre id="sessionResult">Controlador ainda não consultado.</pre>
+    </section>
+
+    <section class="card" style="margin-top:8px">
+      <h2>Build GPU / Release</h2>
+      <p>
+        Exporta a Cobrinha para um executável Linux release e configura a
+        abertura do jogo para usar esse binário com renderização via GPU.
+      </p>
+
+      <div class="row">
+        <button id="buildGodot" type="button">
+          Compilar nova versão
+        </button>
+
+        <label class="checkline">
+          <input
+            id="buildUseForLive"
+            type="checkbox"
+            checked
+          >
+          Usar ao abrir o jogo
+        </label>
+      </div>
+
+      <pre id="buildResult">Build ainda não consultado.</pre>
+    </section>
+
+    <section class="card maintenance-card" style="margin-top:8px">
+      <h2>Limpeza do sistema</h2>
+      <p>
+        Remove todo o histórico temporário de falas, fotos em cache,
+        testes de voz e logs das lives. Músicas de fundo, vozes,
+        texturas, configurações e arquivos do jogo são preservados.
+      </p>
+
+      <div class="row">
+        <button id="cleanupAnalyze" type="button">
+          Analisar arquivos
+        </button>
+
+        <button id="cleanupRun" class="cleanup-button" type="button">
+          Limpar temporários agora
+        </button>
+      </div>
+
+      <pre id="cleanupResult">Limpeza ainda não consultada.</pre>
+    </section>
+
+    <section class="card content-update-card" style="margin-top:8px">
+      <div class="content-update-head">
+        <div>
+          <h2>Atualizações de conteúdo</h2>
+          <p>
+            Procura músicas de fundo e reações novas no catálogo oficial. Os
+            arquivos são verificados e só entram no sistema com o jogo fechado.
+          </p>
+        </div>
+        <span id="contentUpdateBadge" class="content-update-badge">Aguardando</span>
+      </div>
+
+      <div class="content-update-summary">
+        <div>
+          <strong>Instalados</strong>
+          <span id="contentInstalledCount">0</span>
+        </div>
+        <div>
+          <strong>Novidades</strong>
+          <span id="contentAvailableCount">0</span>
+        </div>
+        <div>
+          <strong>Download</strong>
+          <span id="contentDownloadSize">0 B</span>
+        </div>
+      </div>
+
+      <label class="checkline content-auto-setting">
+        <input id="contentAutoInstall" type="checkbox" checked>
+        Baixar automaticamente quando o jogo estiver fechado
+      </label>
+
+      <div class="row">
+        <button id="contentCheck" type="button">Procurar novidades</button>
+        <button id="contentInstall" class="live-toggle" type="button" disabled>
+          Baixar e instalar
+        </button>
+      </div>
+
+      <pre id="contentUpdateResult">Catálogo ainda não consultado.</pre>
+    </section>
+
+    <section class="card" style="margin-top:8px">
+      <h2>Inteligência artificial</h2>
+      <div class="control-strip">
+        <label for="openaiApiKey">Chave da API OpenAI</label>
+        <input
+          id="openaiApiKey"
+          type="password"
+          autocomplete="new-password"
+          spellcheck="false"
+          placeholder="Cole uma nova chave para salvar"
+        >
+
+        <label for="openaiModel">Modelo</label>
+        <input
+          id="openaiModel"
+          type="text"
+          value="gpt-4.1-mini"
+          autocomplete="off"
+          spellcheck="false"
+        >
+
+        <label class="checkline">
+          <input id="openaiEnabled" type="checkbox">
+          Ativar respostas por IA
+        </label>
+
+        <div class="row">
+          <button id="openaiSave" type="button">Salvar configuração</button>
+          <button id="openaiRemove" type="button">Remover chave</button>
+        </div>
+
+        <small id="openaiStatus">Configuração ainda não consultada.</small>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h1>Estado do sistema</h1>
+
+        <div class="cobrinha-status-grid">
+          <div class="cobrinha-status-card">
+            <strong>Servidor</strong>
+            <div id="server" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Godot oficial</strong>
+            <div id="godot" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Jogo</strong>
+            <div id="game" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Vocal</strong>
+            <div id="vocal" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Saúde live</strong>
+            <div id="liveHealth" class="value">...</div>
+            <small id="liveHealthDetail">Aguardando diagnóstico.</small>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Voz (Piper)</strong>
+            <div id="voice" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Músicas</strong>
+            <div id="music" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Monitor TikTok</strong>
+            <div id="monitor" class="value">...</div>
+          </div>
+
+          <div class="cobrinha-status-card">
+            <strong>Eventos sociais</strong>
+            <div id="socialEvents" class="value">...</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Música de fundo</h2>
+        <p>
+          Volume aplicado em tempo real no jogo.
+          O valor fica persistido entre reinícios.
+        </p>
+
+        <div class="control-strip">
+          <div class="mini-control">
+            <label for="musicVolume">Volume</label>
+            <input
+              id="musicVolume"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="16"
+            >
+            <output id="musicVolumeValue">16%</output>
+          </div>
+
+          <label class="checkline">
+            <input
+              id="musicEnabled"
+              type="checkbox"
+              checked
+            >
+            Música ligada
+          </label>
+
+          <small id="musicRuntimeStatus">
+            Aguardando estado da música.
+          </small>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Monitor TikTok</h2>
+        <p>
+          O monitor pode ser controlado manualmente aqui e tambem sera
+          conectado automaticamente depois do inicio da sessao.
+        </p>
+
+        <div class="cobrinha-control-block">
+          <label for="monitorUsername">Usuário TikTok</label>
+          <input
+            id="monitorUsername"
+            maxlength="96"
+            autocomplete="off"
+            placeholder="@usuario_da_live"
+          >
+
+          <div class="row">
+            <button id="monitorStart" type="button">
+              Conectar monitor
+            </button>
+
+            <button id="monitorStop" type="button">
+              Parar monitor
+            </button>
+          </div>
+
+          <pre id="monitorResult">Monitor ainda não consultado.</pre>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Fala manual da live</h2>
+
+        <label for="speechText">Texto</label>
+        <textarea
+          id="speechText"
+          maxlength="3000"
+          spellcheck="true"
+          rows="7"
+          placeholder="Digite aqui o texto que a Cobrinha deve falar."
+        >Olá. A maçã está ótima. Você também está prestando atenção?</textarea>
+
+        <div class="row">
+          <button id="speechPreview" type="button">
+            Ver texto da voz
+          </button>
+
+          <button id="speechSend" type="button">
+            Inserir fala na live
+          </button>
+        </div>
+
+        <label>Texto preparado para voz</label>
+        <div id="preparedText" class="cobrinha-status-card">
+          Nenhuma prévia ainda.
+        </div>
+
+        <pre id="speechResult">Aguardando teste...</pre>
+      </article>
+
+      <article class="card">
+        <h2>Estado detalhado</h2>
+        <pre id="state" class="cobrinha-state">Carregando...</pre>
+      </article>
+    </section>
+
+    <section class="support-strip" aria-labelledby="supportTitle">
+      <div class="support-copy">
+        <span class="support-kicker">Apoie o Snake Reyers Lite</span>
+        <h2 id="supportTitle">Que tal me pagar um cafezinho?</h2>
+        <p>Estou dando o sistema de graça. Se ele ajudar sua live, seu apoio ajuda o projeto a continuar crescendo. Haha!</p>
+      </div>
+
+      <div class="pix-block">
+        <span class="pix-label">Chave Pix</span>
+        <code id="pixKey" class="pix-key">4b3d5583-daa5-4d66-9972-3c7ac33741f3</code>
+        <button id="copyPix" type="button">Copiar chave Pix</button>
+        <small id="pixCopyStatus" role="status" aria-live="polite"></small>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="systemUpdateModal" class="modal">
+    <form method="dialog" class="modal-card system-update-modal">
+      <header class="modal-head">
+        <div>
+          <strong>Atualização do Snake Reyers Lite</strong>
+          <span>Baixa o pacote oficial, valida e reinicia o sistema.</span>
+        </div>
+        <button id="closeSystemUpdateModal" type="button">Fechar</button>
+      </header>
+
+      <section class="system-update-status">
+        <div class="system-update-title-line">
+          <strong id="systemUpdateTitle">Verificando versão...</strong>
+          <span id="systemUpdateBadge">Aguardando</span>
+        </div>
+        <p id="systemUpdateVersions">Versão instalada: consultando</p>
+        <p id="systemUpdateLiveNotice" class="modal-note"></p>
+      </section>
+
+      <footer class="modal-actions">
+        <button id="systemUpdateCheck" type="button">Verificar novamente</button>
+        <button id="systemUpdateInstall" class="live-toggle" type="button" disabled>
+          Baixar, instalar e reiniciar
+        </button>
+      </footer>
+
+      <pre id="systemUpdateOutput" class="system-update-output">Atualização ainda não consultada.</pre>
+    </form>
+  </dialog>
+
+  <dialog id="textureModal" class="modal">
+    <form method="dialog" class="modal-card">
+      <header class="modal-head">
+        <div>
+          <strong>Enviar textura</strong>
+          <span>Adiciona texturas externas para o sorteio automatico do terreno.</span>
+        </div>
+        <button id="closeTextureModal" type="button">Fechar</button>
+      </header>
+
+      <section class="modal-grid">
+        <div>
+          <label>Tipo</label>
+          <select id="textureType">
+            <option value="piso">Piso da arena</option>
+            <option value="parede">Parede lateral</option>
+            <option value="grama">Grama externa</option>
+            <option value="elevacao">Elevacao/relevo</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Nome</label>
+          <input
+            id="textureLabel"
+            type="text"
+            placeholder="Ex: pedra clara"
+          >
+        </div>
+
+        <div>
+          <label>Arquivo</label>
+          <input
+            id="textureFile"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+          >
+        </div>
+      </section>
+
+      <p class="modal-note">
+        O servidor salva em private/textures, converte para PNG e atualiza private/terrain_textures.json.
+      </p>
+
+      <footer class="modal-actions">
+        <button id="uploadTexture" type="button">Enviar textura</button>
+        <button id="refreshTextures" type="button">Atualizar lista</button>
+      </footer>
+
+      <pre id="textureStatus">Carregando...</pre>
+    </form>
+  </dialog>
+
+  <script src="/static/js/panel.js?v=18"></script>
+</body>
+</html>
